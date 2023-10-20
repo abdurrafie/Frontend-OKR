@@ -12,6 +12,7 @@ import { Divisi } from './pages/Divisi';
 import { User } from './pages/User';
 import { Approving } from './pages/Approving';
 import { KeyResult } from './pages/KeyResult';
+import { Task } from './pages/Task';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path='/Profile' Component={Profile}/>
         <Route path='/InputProfile' Component={InputProfile}/>
         <Route path='/Register' Component={Register}/>
+        <Route path='/Task' Component={Task}/>
 
         <Route path="/Objective/:id" element={<Objective/>} />
         <Route path="/KeyResult/:id" element={<KeyResult/>} />

@@ -3,6 +3,7 @@ import { NavLink, useLocation, useParams } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import Chart from 'chart.js/auto';
 
 
 
@@ -236,6 +237,67 @@ export const Dashboard = () => {
     return formattedDatetime;
   }
 
+  let myChart = null; // Deklarasikan objek myChart di luar useEffect
+
+
+  useEffect(() => {
+    // Menghancurkan grafik yang sudah ada (jika ada)
+    if (myChart) {
+      myChart.destroy();
+    }
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    myChart = new Chart(ctx, {
+      type: 'line', // Ubah tipe grafik menjadi 'line'
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [
+          {
+            label: 'Objektif',
+            data: [10, 20, 10, 30],
+            borderColor: 'blue', // Warna garis
+            borderWidth: 2, // Lebar garis
+            fill: false, // Tidak mengisi area di bawah garis
+            tension: 0.4, // Set tension to control the interpolation mode (0 for 'linear', 0.4 for 'smooth')
+
+          },
+          {
+            label: 'Keyresult Progres',
+            data: [10, 22, 5],
+            borderColor: 'RED', // Warna garis
+            borderWidth: 2, // Lebar garis
+            fill: false, // Tidak mengisi area di bawah garis
+            tension: 0.4, // Set tension to control the interpolation mode (0 for 'linear', 0.4 for 'smooth')
+
+          },
+          {
+            label: 'Keyresult Completed',
+            data: [10, 55, 40],
+            borderColor: 'blue', // Warna garis
+            borderWidth: 2, // Lebar garis
+            fill: false, // Tidak mengisi area di bawah garis
+            tension: 0.4, // Set tension to control the interpolation mode (0 for 'linear', 0.4 for 'smooth')
+
+          },
+        ],
+      },
+      options: {
+        scales: {
+          x: {
+            position: 'bottom', // Menempatkan label sumbu X di bawah grafik
+          },
+          y: {
+            beginAtZero: true,
+          },
+        },
+        
+      },
+    });
+  }, []);
+ 
+
+
+
 
   return (
     <div className='flex w-full bg-gray-100/60 h-fit font-Poppins'>
@@ -249,7 +311,7 @@ export const Dashboard = () => {
           <div className="w-full flex mx-auto">
             <div className="w-[700px] bg-white rounded-lg p-5 mt-[20px]">
               <h1 className="font-semibold text-xl mb-2">Laporan Data</h1>
-              <h1 className="font-normal text-sm">Sales Summery</h1>
+              <h1 className="font-normal text-sm">Progress Summery</h1>
 
               <div className="flex mt-10">
                 <div className="w-[150px] h-[150px] bg-Merah-muda rounded-xl">
@@ -288,6 +350,8 @@ export const Dashboard = () => {
 
             <div className="w-[470px] ml-auto mt-[20px] rounded-lg p-5 bg-white">
               {/* Blog diagram chart */}
+              <canvas id="myChart"></canvas>
+
             </div>
           </div>
 
@@ -333,9 +397,9 @@ export const Dashboard = () => {
                                   </div>
                                 ))}
                                 {Projek.team.length > 4 && (
-                                  <div className="-ml-1 my-auto flex rounded-[100%] text-gray-500 w-10 h-10 bg-white ">
+                                  <div className="-ml-1 my-auto flex rounded-[100%] bg-unggu-tua text-white w-8 h-8 ">
                                     <p className="w-fit h-fit m-auto ">
-                                      + {Projek.team.length - 4}
+                                      +{Projek.team.length - 4}
                                     </p>
                                   </div>
                                 )}

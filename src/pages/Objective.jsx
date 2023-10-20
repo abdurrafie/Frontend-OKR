@@ -321,9 +321,9 @@ export const Objective = () => {
         nama: '',
         file: null,
         link: '',
+        days: '',
         assign_to: '',
         target_value: '',
-        dasy: '',
 
     });
     console.log('a ', formDataKey);
@@ -395,7 +395,7 @@ export const Objective = () => {
 
                 Swal.fire({
                     title: 'Sukses',
-                    text: 'Pendaftaran berhasil!',
+                    text: 'Berhasil Menambah Objektif!',
                     icon: 'success',
                     confirmButtonText: 'OKE',
                 }).then((result) => {
@@ -404,7 +404,7 @@ export const Objective = () => {
                     }
                 });
 
-                setSuccessMessage('Pendaftaran berhasil!');
+                setSuccessMessage('Berhasil Menambah Objektif!');
             } else {
                 console.error('Pendaftaran gagal');
 
@@ -439,7 +439,7 @@ export const Objective = () => {
 
                 Swal.fire({
                     title: 'Sukses',
-                    text: 'Pendaftaran berhasil!',
+                    text: 'Berhasil Menambah Keyresult!',
                     icon: 'success',
                     confirmButtonText: 'OKE',
                 }).then((result) => {
@@ -448,7 +448,7 @@ export const Objective = () => {
                     }
                 });
 
-                setSuccessMessage('Pendaftaran berhasil!');
+                setSuccessMessage('Berhasil Menambah Keyresult!');
             } else {
                 console.error('Pendaftaran gagal');
 
@@ -524,7 +524,7 @@ export const Objective = () => {
 
                 Swal.fire({
                     title: 'Sukses',
-                    text: 'Pendaftaran berhasil!',
+                    text: 'Berhasil Mengedit Objektif!',
                     icon: 'success',
                     confirmButtonText: 'OKE',
                 }).then((result) => {
@@ -533,7 +533,7 @@ export const Objective = () => {
                     }
                 });
 
-                setSuccessMessage('Pendaftaran berhasil!');
+                setSuccessMessage('Berhasil Mengedit Objektif!');
             } else {
                 console.error('Pendaftaran gagal');
 
@@ -563,7 +563,7 @@ export const Objective = () => {
         assign_to: '',
         nama_profile: '',
         target_value: '',
-        dasy: '',
+        days: '',
     });
 
     console.log('IDKeyResult', IDKeyResult);
@@ -579,6 +579,7 @@ export const Objective = () => {
                         nama_profile: Data.nama_profile,
                         link: Data.link,
                         target_value: Data.target_value,
+                        days: Data.days,
                     });
 
 
@@ -649,7 +650,7 @@ export const Objective = () => {
 
                 Swal.fire({
                     title: 'Sukses',
-                    text: 'Pendaftaran berhasil!',
+                    text: 'Berhasil Mengedit Keyresult',
                     icon: 'success',
                     confirmButtonText: 'OKE',
                 }).then((result) => {
@@ -658,7 +659,7 @@ export const Objective = () => {
                     }
                 });
 
-                setSuccessMessage('Pendaftaran berhasil!');
+                setSuccessMessage('Berhasil Mengedit Keyresult');
             } else {
                 console.error('Pendaftaran gagal');
 
@@ -799,7 +800,7 @@ export const Objective = () => {
                                                 <div className="text-white m-auto w-fit h-fit"><HiMiniChartBarSquare size={'20px'} /></div>
                                             </div>
                                             <h1 className="text-2xl font-semibold ml-3 mt-5">{dataObjective.length}</h1>
-                                            <h1 className="text-sm font-normal ml-3 mt-4">Total Objective</h1>
+                                            <h1 className="text-sm font-normal ml-3 mt-4">Total Objektif</h1>
                                         </div>
 
                                         <div className="w-[150px] h-[150px] bg-cream rounded-xl ml-5">
@@ -807,7 +808,7 @@ export const Objective = () => {
                                                 <div className="text-white m-auto w-fit h-fit"><HiDocumentText size={'20px'} /></div>
                                             </div>
                                             <h1 className="text-2xl font-semibold ml-3 mt-5">{TotalKey}</h1>
-                                            <h1 className="text-sm font-normal ml-3 mt-4">Key Result Active</h1>
+                                            <h1 className="text-sm font-normal ml-3 mt-4">Key Result Aktif</h1>
                                         </div>
 
                                         <div className="w-[150px] h-[150px] bg-Hijau-muda rounded-xl ml-5">
@@ -833,7 +834,7 @@ export const Objective = () => {
                                                 <div className="text-white m-auto w-fit h-fit"><MdDateRange size={'20px'} /></div>
                                             </div>
                                             <div className="my-auto ml-3 ">
-                                                <p className='text-gray-700 text-sm'>Start Date</p>
+                                                <p className='text-gray-700 text-sm'>Tanggal Mulai</p>
                                                 <p className='text-gray-900 text-sm font-semibold'>{tanggalYangBenar}</p>
                                             </div>
                                         </div>
@@ -843,7 +844,7 @@ export const Objective = () => {
                                                 <div className="text-white m-auto w-fit h-fit"><MdDateRange size={'20px'} /></div>
                                             </div>
                                             <div className="my-auto ml-3 ">
-                                                <p className='text-gray-700 text-sm'>End Date</p>
+                                                <p className='text-gray-700 text-sm'>Tanggal Selesai</p>
                                                 <p className='text-gray-900 text-sm font-semibold'>{tanggalEnd}</p>
                                             </div>
                                         </div>
@@ -855,7 +856,15 @@ export const Objective = () => {
                         </div>
 
                         <div className="w-[470px] ml-auto mt-[30px]">
-                            <div className="bg-white w-full h-[236px]  rounded-lg p-3 mb-[30px] ">
+                        <div className="bg-white flex h-[100px] rounded-lg p-3 w-full  mb-[30px]">
+                                <div className="w-full h-fit m-auto">
+                                    <h1 className={`text-3xl ${Percentage() === '100' ? "text-Hijau-tua" : "text-Gold"}`}>{Percentage()}%</h1>
+                                    <div className="w-[98%] mx-auto mt-2 h-3 bg-gray-100 rounded-xl">
+                                        <div className={`h-3 rounded-xl ${Percentage() === '100' ? "bg-Hijau-tua" : "bg-Gold"}`} style={{ width: `${Percentage()}%` }}></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white w-full h-[236px]  rounded-lg p-3 ">
                                 <p className="font-semibold">Tim Projek</p>
                                 <div className="overflow-y-scroll w-full h-[176px] mt-3">
                                     <div className="w-full h-fit ">
@@ -876,30 +885,20 @@ export const Objective = () => {
                                         )}
                                     </div>
                                 </div>
-
-
-                            </div>
-                            <div className="bg-white flex h-[100px] rounded-lg p-3 w-full">
-                                <div className="w-full h-fit m-auto">
-                                    <h1 className={`text-3xl ${Percentage() === '100' ? "text-Hijau-tua" : "text-Gold"}`}>{Percentage()}%</h1>
-                                    <div className="w-[98%] mx-auto mt-2 h-3 bg-gray-100 rounded-xl">
-                                        <div className={`h-3 rounded-xl ${Percentage() === '100' ? "bg-Hijau-tua" : "bg-Gold"}`} style={{ width: `${Percentage()}%` }}></div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div className="my-[30px] flex">
-                        <h1 className="font-bold w-fit h-fit my-auto">Objective</h1>
+                        <h1 className="font-bold w-fit h-fit my-auto">Objektif</h1>
 
                         {userRole === 'Admin' && (
-                            <div className="bg-unggu w-[180px] p-1 rounded-xl ml-auto h-10 flex cursor-pointer" onClick={() => setshowTambah(true)}>
+                            <div className="bg-unggu w-[210px] p-1 rounded-xl ml-auto h-10 flex cursor-pointer" onClick={() => setshowTambah(true)}>
                                 <div className="w-fit h-fit flex m-auto">
                                     <div className="text-white w-fit h-fit my-auto">
                                         <IoIosAddCircle size={'30px'} />
                                     </div>
-                                    <p className='text-white w-fit h-fit my-auto font-semibold ml-2'>Add Objek</p>
+                                    <p className='text-white w-fit h-fit my-auto font-semibold ml-2'>Tambah Objektif</p>
                                 </div>
                             </div>
                         )}
@@ -973,7 +972,7 @@ export const Objective = () => {
                                         </div>
                                     </div>
                                     <p className=' text-lg mt-6'>{objek.nama}</p>
-                                    <div className="overflow-y-scroll w-full max-h-[475px] h-fit mt-3">
+                                    <div className="overflow-y-scroll w-full max-h-[575px] h-fit mt-3">
                                         {/* Merender dataKeyResult yang sesuai dengan objek saat ini */}
                                         {Array.isArray(dataKeyResult) && dataKeyResult.length > 0 ? (
                                             dataKeyResult.some((keyResultSet, objekIndex) => {
@@ -1352,7 +1351,7 @@ export const Objective = () => {
                                                 </div>
 
                                                 <div className='mb-2'>
-                                                    <input type="text" name='days' placeholder='days' onChange={handleEditChangeKey}
+                                                    <input type="text" name='days' placeholder='days ' onChange={handleInputChangeKey}
                                                         className="px-2 py-3 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1" />
                                                 </div>
 

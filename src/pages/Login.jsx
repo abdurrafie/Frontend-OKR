@@ -161,7 +161,7 @@ export const Login = () => {
                   className='p-2 h-8 rounded-[15px] w-full mb-[30px]' />
 
                 <div className='relative w-full h-fit mb-[30px]'>
-                  <input type={showPassword ? 'text' : 'password'} name="password" placeholder='password' autoFocus
+                  <input type={showPassword ? 'text' : 'password'} name="password" placeholder='Password' autoFocus
                     required value={formData.password} onChange={handleInputChange}
                     className='p-2 h-8 rounded-[15px] w-full ' />
                   <div onClick={toggleShowPassword} className=' right-1 hover:text-unggu absolute top-1'>

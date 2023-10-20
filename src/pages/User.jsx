@@ -203,7 +203,7 @@ export const User = () => {
 
                     Swal.fire({
                         title: 'Sukses',
-                        text: 'Pendaftaran berhasil!',
+                        text: 'Berhasil Mengedit User!',
                         icon: 'success',
                         confirmButtonText: 'OKE',
                     }).then((result) => {
@@ -212,7 +212,7 @@ export const User = () => {
                         }
                     });
 
-                    setSuccessMessage('Pendaftaran berhasil!');
+                    setSuccessMessage('Berhasil Mengedit User!');
                 } else {
                     console.error('Pendaftaran gagal');
 
@@ -298,12 +298,12 @@ export const User = () => {
                             <option value="Menejemen">Menejemen</option>
                         </select>
                         {userRole === 'Admin' && (
-                            <div className="bg-unggu w-[180px] cursor-pointer p-1 rounded-xl ml-auto h-10 flex" onClick={() => setShowTambahUser(true)}>
+                            <div className="bg-unggu w-[200px] cursor-pointer p-1 rounded-xl ml-auto h-10 flex" onClick={() => setShowTambahUser(true)}>
                                 <div className="w-fit h-fit flex m-auto">
                                     <div className="text-white w-fit h-fit my-auto">
                                         <IoIosAddCircle size={'30px'} />
                                     </div>
-                                    <p className='text-white w-fit h-fit my-auto font-semibold ml-2'>Add User</p>
+                                    <p className='text-white w-fit h-fit my-auto font-semibold ml-2'>Tambah User</p>
                                 </div>
                             </div>
                         )}
@@ -405,8 +405,8 @@ export const User = () => {
                                         </div>
 
                                         <div className='w-[200px] mt-5 ml-auto'>
-                                            <input type="submit" value="Tambah Akun"
-                                                className='rounded-xl w-full h-10 bg-unggu font-Inter font-semibold text-white' />
+                                            <input type="submit" value="Tambah User"
+                                                className='rounded-xl w-full h-10 bg-unggu font-Inter font-semibold text-white cursor-pointer' />
                                         </div>
 
                                     </form>
@@ -458,9 +458,9 @@ export const User = () => {
                                             <option value="Menejemen">Menejemen</option>
                                         </select>
 
-                                        <div className='w-[200px] mt-5 ml-auto'>
-                                            <input type="submit" value="Tambah Akun"
-                                                className='rounded-xl w-full h-10 bg-unggu font-Inter font-semibold text-white' />
+                                        <div className='w-[200px] mt-5 ml-auto cursor-pointer'>
+                                            <input type="submit" value="Edit Akun"
+                                                className='rounded-xl w-full h-10 bg-unggu font-Inter font-semibold text-white cursor-pointer' />
                                         </div>
                                     </form>
                                 </div>

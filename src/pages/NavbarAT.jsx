@@ -8,7 +8,8 @@ import axios from 'axios';
 import Logo from "./../foto/Logo.png";
 import { IoSearch } from "react-icons/io5";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { BiSolidDashboard, BiTargetLock } from "react-icons/bi";
+import { HiOutlineLogout } from "react-icons/hi";
+import { BiSolidDashboard, BiTargetLock, BiSolidUserCircle } from "react-icons/bi";
 
 
 export const NavbarAT = () => {
@@ -16,6 +17,7 @@ export const NavbarAT = () => {
     const [IDProfile, setIDProfile] = useState(null); // Menambahkan state data
     const location = useLocation();
     const [showNotifikasi, setshowNotifikasi] = useState(false); // Tambahkan state untuk popup pengeditan
+    const [showProfile, setshowProfile] = useState(false); // Tambahkan state untuk popup pengeditan
     const [showNotif, setshowNotif] = useState(true); // Tambahkan state untuk popup pengeditan
     const [LastProgres, setLastProgres] = useState(null); // Menambahkan state data
 
@@ -74,16 +76,16 @@ export const NavbarAT = () => {
                     console.error('Terjadi kesalahan:', error);
                 });
 
-                const interval = setInterval(() => {
-                    if (showNotifikasi) {
-                        closeNotifikasi();
-                    }
-                }, 500);
-        
-                // Membersihkan interval saat komponen tidak lagi digunakan
-                return () => {
-                    clearInterval(interval);
-                };
+            const interval = setInterval(() => {
+                if (showNotifikasi) {
+                    closeNotifikasi();
+                }
+            }, 500);
+
+            // Membersihkan interval saat komponen tidak lagi digunakan
+            return () => {
+                clearInterval(interval);
+            };
         } else {
             console.log('Token tidak ditemukan');
         }
@@ -127,7 +129,7 @@ export const NavbarAT = () => {
 
     function getLocationLabel(path) {
         switch (path) {
-            case '/':
+            case '/Dashboard':
                 return 'Dashboard';
 
             case '/OKR':
@@ -150,18 +152,42 @@ export const NavbarAT = () => {
 
             case '/Objective':
                 return 'Objective';
+
+            case '/Task':
+                return 'Task';
+
+            case '/Objective':
+                return 'Objective';
             // Tambahkan lebih banyak case sesuai dengan halaman Anda
             default:
-                return 'Dashboard';
+                return 'OKR';
         }
     }
 
     const handleClick = () => {
         setshowNotifikasi(true);
     }
-    console.log('LastProgres', LastProgres);
+    // console.log('LastProgres', LastProgres);
 
-    
+    const handleLogout = () => {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "Kamu yakin mau Logout",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            window.location.href = '/';
+          }
+        });
+      };
+
+
 
 
 
@@ -177,7 +203,7 @@ export const NavbarAT = () => {
 
                 <div className="relative ml-auto my-auto flex">
 
-                    <div className="text-Gold w-fit h-fit p-1 cursor-pointer rounded-md mr-3 bg-yellow-50 relative"
+                    <div className="text-Gold w-fit h-fit p-1 my-auto cursor-pointer rounded-md mr-3 bg-yellow-50 relative"
                         onClick={() => {
                             handleClick();
                             setshowNotif(false);
@@ -186,18 +212,41 @@ export const NavbarAT = () => {
                         <IoMdNotificationsOutline size={'23px'} />
                         <div className={`w-1 h-1 absolute right-[2px] top-[2px] bg-red-500 rounded-full ${showNotif ? '' : 'hidden'}`}></div>
                     </div>
+                    <div className="" onMouseEnter={() => setshowProfile(true)} onMouseLeave={() => setshowProfile(false)}>
+                            <div className="my-auto flex mr-5">
+                                <img src={`http://localhost:9000/okr.profile/${dataProfile.foto}`} className='w-12 h-12 my-auto mr-2 rounded-full p-1 border-unggu border' />
+                            </div>
 
-                    <NavLink to={'/Profile'}>
-                        <div className="my-auto flex mr-5">
-                            <img src={`http://localhost:9000/okr.profile/${dataProfile.foto}`} className='w-10 h-10 my-auto mr-2 rounded-full border' />
-                            <p className="my-auto">{dataProfile.nama}</p>
-                        </div>
-                    </NavLink>
+                        {showProfile && (
+                            <div className="absolute inset-0 items-center justify-center z-10 w-[300px] h-fit -left-[220px] top-[40px] ">
+                                <div className="bg-white p-3 mt-7 shadow-lg shadow-black/20 w-full rounded-md">
+                                    <div className="flex">
+                                        <img src={`http://localhost:9000/okr.profile/${dataProfile.foto}`} className='w-10 h-10 my-auto mr-2 rounded-full border-2' />
+                                        <p className="w-fit h-fit my-auto ml-2">{dataProfile.nama}</p>
+                                    </div>
+
+                                    <hr className="my-3" />
+                                    
+                                    <NavLink to={'/Profile'}>
+                                    <div className="flex ml-2 p-1 hover:bg-unggu-muda rounded-md text-gray-400 cursor-pointer hover:text-black">
+                                        <BiSolidUserCircle className='w-8 h-8 my-auto mr-2 rounded-full' />
+                                        <p className="w-fit h-fit my-auto ml-2">Profile</p>
+                                    </div>
+                                    </NavLink>
+                                    
+                                    <div className="flex mt-4 ml-3 p-1 hover:bg-unggu-muda rounded-md text-gray-400 cursor-pointer hover:text-black" onClick={handleLogout}>
+                                        <HiOutlineLogout className='w-7 h-7 my-auto mr-2 rounded-full' />
+                                        <p className="w-fit h-fit my-auto ml-2">Logout</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
 
                     {showNotifikasi && (
-                        <div className="absolute inset-0 p-3 items-center justify-center z-10 w-[450px] h-fit shadow-lg shadow-black/20 bg-white -left-56 rounded-xl top-[35px] border "
-                            onClick={closeNotifikasi}
-                        >
+                        <div className="absolute inset-0 p-3 items-center justify-center z-10 w-[450px] h-fit shadow-lg cursor-pointer shadow-black/20 bg-white -left-56 rounded-xl top-[35px] border "
+                            onClick={closeNotifikasi} >
                             <div className="flex">
                                 <div className="overflow-y-scroll overflow-hidden w-full h-[350px] mt-3">
                                     <div className="w-full h-fit">
@@ -227,6 +276,8 @@ export const NavbarAT = () => {
 
                         </div>
                     )}
+
+
 
                 </div>
             </div>

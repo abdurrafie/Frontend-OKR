@@ -302,7 +302,7 @@ export const Approving = () => {
                 </div>
               ))
             ) : (
-              <div>Loading...</div>
+              <div className="mt-2 font-semibold">Belum ada data progres...</div>
             )}
 
           </div>

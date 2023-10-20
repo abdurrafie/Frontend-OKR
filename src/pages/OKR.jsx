@@ -24,11 +24,10 @@ export const OKR = () => {
         start_date: '',
         end_date: '',
         team: [],
-
-
     });
-
-
+    
+    const [selectedStatus, setSelectedStatus] = useState(''); // State untuk menyimpan status yang dipilih
+    const [filteredProjek, setFilteredProjek] = useState([]);
 
     const [selectedQuarter, setSelectedQuarter] = useState('');
     const [persentage, setPersentage] = useState(0);
@@ -183,19 +182,28 @@ export const OKR = () => {
 
 
     // Filter data proyek berdasarkan Quarter yang dipilih
-    const filteredProjek = dataProjek
-    ? dataProjek.filter((Projek) => {
-        if (!selectedQuarter) {
-          // Jika belum ada Quarter yang dipilih, tampilkan semua proyek
-          return true;
-        } else {
-          // Jika ada Quarter yang dipilih, tampilkan proyek sesuai Quarter
-          const quarterCreated = getQuarterdate(new Date(Projek.start_date), new Date(Projek.end_date));
-          console.log('quarterCreated', quarterCreated);
-        return quarterCreated === selectedQuarter;
-        }
-      })
-    : [];
+    useEffect(() => {
+        const filteredData = dataProjek
+          ? dataProjek.filter((Projek) => {
+              // Lakukan filter berdasarkan status yang dipilih
+              if (!selectedQuarter) {
+                // Jika belum ada Quarter yang dipilih, tampilkan semua proyek
+                return true;
+              } else {
+                // Jika ada Quarter yang dipilih, tampilkan proyek sesuai Quarter
+                const quarterCreated = getQuarterdate(new Date(Projek.start_date), new Date(Projek.end_date));
+                return quarterCreated === selectedQuarter;
+              }
+            })
+          : [];
+    
+        // Filter berdasarkan status yang dipilih
+        const filteredByStatus = selectedStatus
+          ? filteredData.filter((Projek) => Projek.status === selectedStatus)
+          : filteredData;
+    
+        setFilteredProjek(filteredByStatus);
+      }, [dataProjek, selectedQuarter, selectedStatus]);
 
 
 
@@ -336,7 +344,7 @@ export const OKR = () => {
 
                 Swal.fire({
                     title: 'Sukses',
-                    text: 'Pendaftaran berhasil!',
+                    text: 'Berhasil menambahkan projek!',
                     icon: 'success',
                     confirmButtonText: 'OKE',
                 }).then((result) => {
@@ -345,7 +353,7 @@ export const OKR = () => {
                     }
                 });
 
-                setSuccessMessage('Pendaftaran berhasil!');
+                setSuccessMessage('Berhasil menambahkan projek!');
             } else {
                 console.error('Pendaftaran gagal');
 
@@ -545,7 +553,7 @@ export const OKR = () => {
 
                 Swal.fire({
                     title: 'Sukses',
-                    text: 'Pendaftaran berhasil!',
+                    text: 'Berhasil Mengedit Projek!',
                     icon: 'success',
                     confirmButtonText: 'OKE',
                 }).then((result) => {
@@ -554,7 +562,7 @@ export const OKR = () => {
                     }
                 });
 
-                setSuccessMessage('Pendaftaran berhasil!');
+                setSuccessMessage('Berhasil Mengedit Projek!');
             } else {
                 console.error('Pendaftaran gagal');
 
@@ -594,10 +602,11 @@ export const OKR = () => {
                             <option value="Q4">Q4</option>
                         </select>
 
-                        <select name="" className='w-[200px] h-10 p-1 shadow-lg rounded-lg  ml-5'>
+                        <select name="status" className='w-[200px] h-10 p-1 shadow-lg rounded-lg  ml-5'
+                            onChange={(e) => setSelectedStatus(e.target.value)} value={selectedStatus}>
                             <option value="">Semua Status</option>
-                            <option value="">Selesai</option>
-                            <option value="">Progress</option>
+                            <option value="Selesai">Selesai</option>
+                            <option value="Progress">Progress</option>
                         </select>
 
                         {/* Hanya tampilkan elemen jika peran pengguna adalah "admin" */}
@@ -607,7 +616,7 @@ export const OKR = () => {
                                     <div className="text-white w-fit h-fit my-auto" >
                                         <IoIosAddCircle size={'30px'} />
                                     </div>
-                                    <p className='text-white w-fit h-fit my-auto font-semibold ml-2'>Tambah Project</p>
+                                    <p className='text-white w-fit h-fit my-auto font-semibold ml-2'>Tambah Projek</p>
                                 </div>
                             </div>
                         )}
@@ -654,9 +663,9 @@ export const OKR = () => {
                                                     </div>
                                                 ))}
                                                 {Projek.team.length > 4 && (
-                                                    <div className="-ml-1 my-auto flex rounded-[100%] text-gray-500 w-10 h-10 bg-white">
+                                                    <div className="-ml-1 my-auto flex rounded-[100%] w-10 h-10 bg-unggu-tua text-white">
                                                         <p className="w-fit h-fit m-auto">
-                                                            + {Projek.team.length - 4}
+                                                            +{Projek.team.length - 4}
                                                         </p>
                                                     </div>
                                                 )}

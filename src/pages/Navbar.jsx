@@ -7,8 +7,10 @@ import Logo from "./../foto/Logo.png";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { BiSolidDashboard, BiTargetLock, BiLogOut } from "react-icons/bi";
+import { BsListTask, BsFillClipboardCheckFill } from "react-icons/bs";
 import { HiOutlineUserGroup } from "react-icons/hi";
 
+//logo task BsFillClipboardCheckFill
 
 export const Navbar = () => {
   const [userRole, setUserRole] = useState(localStorage.getItem('role'));
@@ -109,6 +111,16 @@ export const Navbar = () => {
             </div>
           </div>
         </NavLink>
+
+        <NavLink to='/Task'>
+          <div className={`flex mx-auto w-[200px] hover:bg-unggu hover:text-white rounded-xl p-3 mt-5 text-gray-400 ${location.pathname === '/Task' ? 'nav-link-active' : ''}`}>
+            <div className="flex my-auto w-fit font-semibold h-fit" >
+              <BsFillClipboardCheckFill size={'23px'} />
+              <p className={`ml-3 ${location.pathname === '/Task' ? 'nav-link-active' : ''}`} >Task</p>
+            </div>
+          </div>
+        </NavLink>
+
         {userRole === 'Admin' && (
           <NavLink to='/Approving'>
             <div className={`flex mx-auto w-[200px] hover:bg-unggu hover:text-white rounded-xl p-3 mt-5 text-gray-400 ${location.pathname === '/Approving' ? 'nav-link-active' : ''}`}>
@@ -130,6 +142,7 @@ export const Navbar = () => {
             </div>
           </NavLink>
         )}
+
         {userRole === 'Admin' && (
 
           <NavLink to='/User'>
