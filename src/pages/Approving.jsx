@@ -3,6 +3,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import Logo from "./../foto/No.png";
+
 
 
 import { IoIosAddCircle } from "react-icons/io";
@@ -150,11 +152,11 @@ export const Approving = () => {
                 },
               }
             );
-  
+
             if (response.status === 200 || response.status === 201) {
               const responseData = response.data.newObjekti;
               console.log('Respon dari server (berhasil):', responseData);
-  
+
               Swal.fire({
                 title: 'Sukses',
                 text: 'Approve berhasil!',
@@ -167,26 +169,26 @@ export const Approving = () => {
               });
             } else {
               console.error('Approve gagal');
-  
+
               Swal.fire('Error', 'Approve gagal', 'error');
             }
           } catch (error) {
             console.error('Terjadi kesalahan:', error);
-  
+
             Swal.fire('Error', 'Terjadi kesalahan', 'error');
           }
         }
       });
     } catch (error) {
       console.error('Terjadi kesalahan:', error);
-  
+
       Swal.fire('Error', 'Terjadi kesalahan', 'error');
     }
   };
-  
+
 
   return (
-    <div className='flex w-full bg-gray-100/60 h-fit font-Poppins'>
+    <div className='flex w-full bg-gray-100/60 h-full font-Poppins' style={{ backgroundSize: 'cover' }}>
 
       <div className="w-[260px]"></div>
 
@@ -195,23 +197,6 @@ export const Approving = () => {
         <div className='h-[70px]'></div>
 
         <div className="w-[1200px] mx-auto mt-5">
-          <div className="flex">
-            <select
-              name=""
-              className='w-[200px] h-10 p-1 shadow-lg rounded-lg'>
-              <option value="">Semua Quarter</option>
-              <option value="Q1">Q1</option>
-              <option value="Q2">Q2</option>
-              <option value="Q3">Q3</option>
-              <option value="Q4">Q4</option>
-            </select>
-
-
-
-            {/* Hanya tampilkan elemen jika peran pengguna adalah "admin" */}
-
-          </div>
-
 
           <div className="w-full mt-10">
             <div className='flex w-full h-[60px] bg-white shadow rounded-lg'>
@@ -302,7 +287,12 @@ export const Approving = () => {
                 </div>
               ))
             ) : (
-              <div className="mt-2 font-semibold">Belum ada data progres...</div>
+              <div className="w-full h-fit flex">
+                <div className="w-fit h-fit mx-auto">
+                  <img src={Logo} alt="" className='w-[450px]' />
+                  <div className="mt-6"></div>
+                </div>
+              </div>
             )}
 
           </div>

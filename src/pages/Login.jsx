@@ -122,7 +122,7 @@ export const Login = () => {
         // });
 
         window.location.href = '/Dashboard'; // Gantilah dengan URL yang sesuai
-        
+
       } else {
         console.error('Login gagal');
         Swal.fire({

@@ -5,15 +5,24 @@ import Swal from 'sweetalert2';
 
 import Logo from "./../foto/Logo.png";
 import { FaRegCircleUser } from "react-icons/fa6";
-import { AiOutlineCheckCircle } from "react-icons/ai";
-import { BiSolidDashboard, BiTargetLock, BiLogOut } from "react-icons/bi";
+import { BiSolidDashboard, BiTargetLock, BiLogOut, BiCategory } from "react-icons/bi";
 import { BsListTask, BsFillClipboardCheckFill } from "react-icons/bs";
 import { HiOutlineUserGroup } from "react-icons/hi";
+import { AiOutlineDown, AiOutlineUp, AiOutlineInbox, AiOutlinePicture, AiOutlineHome, AiOutlineCheckCircle } from "react-icons/ai";
 
 //logo task BsFillClipboardCheckFill
 
 export const Navbar = () => {
   const [userRole, setUserRole] = useState(localStorage.getItem('role'));
+  const [isClicked, setIsClicked] = useState(false);
+  const [showSubMenu, setShowSubMenu] = useState(false);
+  const [showSubNav, setShowSubNav] = useState(false);
+
+  const toggleSubNav = () => {
+    setIsClicked(!isClicked);
+    setShowSubNav(!showSubNav);
+    setShowSubMenu(!showSubMenu);
+  };
 
 
   const handleLogout = () => {
@@ -89,8 +98,8 @@ export const Navbar = () => {
 
 
   return (
-    <div className="flex flex-wrap w-[260px] bg-white fixed font-Poppins">
-      <div className='w-[260px] bg-white font-Inter h-[647px]'>
+    <div className="xl:flex flex-wrap xl:w-[260px] hidden bg-white fixed font-Poppins">
+      <div className='w-[260px] bg-white font-Inter h-[647px] sm:hidden lg:block'>
         <img className='w-[200px] mx-auto mt-10 '
           src={Logo} />
 
@@ -121,16 +130,54 @@ export const Navbar = () => {
           </div>
         </NavLink>
 
-        {userRole === 'Admin' && (
+        {/* {userRole === 'Admin' && (
           <NavLink to='/Approving'>
-            <div className={`flex mx-auto w-[200px] hover:bg-unggu hover:text-white rounded-xl p-3 mt-5 text-gray-400 ${location.pathname === '/Approving' ? 'nav-link-active' : ''}`}>
+            <div className={`flex mx-auto w-[200px] hover:bg-unggu hover:text-white rounded-xl p-3 mt-5 text-gray-400 ${location.pathname === '/Approving' ? '' : ''}`}>
               <div className="flex my-auto w-fit font-semibold h-fit" >
                 <AiOutlineCheckCircle size={'23px'} />
-                <p className={`ml-3 ${location.pathname === '/Approving' ? 'nav-link-active' : ''}`} >Approving</p>
+                <p className={`ml-3 ${location.pathname === '/Approving' ? '' : ''}`} >Approving</p>
               </div>
             </div>
           </NavLink>
+        )} */}
+
+        {userRole === 'Admin' && (
+          <div className={`mx-auto w-[200px] mt-5 text-gray-400`}>
+            {/* <div className={`w-full mx-auto flex hover:bg-unggu hover:text-white rounded-xl p-3 text-gray-400 ${isClicked ? 'text-white bg-gray-300' : ''} `} onClick={toggleSubNav} id="nav-menu-1"> */}
+            <div className={`w-full mx-auto flex hover:bg-unggu hover:text-white rounded-xl cursor-pointer p-3 text-gray-400 ${location.pathname === '/Approving' ? 'nav-link-active' : location.pathname === '/ApprovingTask' ? 'nav-link-active' : ''} `} onClick={toggleSubNav} id="nav-menu-1">
+              <span className={` font-semibold mr-2`}><AiOutlineCheckCircle size={'23px'} /></span>
+              <p className={`w-fit font-semibold `}>Approving</p> <span className={`w-fit ml-auto h-fit my-auto font-semibold `}>{isClicked ? <AiOutlineUp /> : <AiOutlineDown />}</span>
+            </div>
+
+            <div className={`transition-all duration-1000 ease-in-out overflow-hidden ${showSubMenu ? 'block max-h-[200px] duration-1000 transition' : 'h-0'}`}>
+              {showSubNav && (
+                <div className="w-[150px] ml-auto">
+                  <ul className={`list-none w-full hover:list-disc mt-1 p-3 cursor-pointer rounded-xl ${location.pathname === '/Approving' ? 'list-disc text-black' : ''}`}>
+                    <li className={`font-semibold ${location.pathname === '/Approving' ? ' ' : ''}`}>
+                      <NavLink
+                        to='/Approving'
+                        className={` flex font-semibold  ${location.pathname === '/Approving' ? '' : ''}`}
+                      >
+                        Key Result
+                      </NavLink>
+                    </li>
+                  </ul>
+                  <ul className={`list-none hover:list-disc mt-1 p-3 cursor-pointer rounded-xl   ${location.pathname === '/ApprovingTask' ? 'list-disc text-black' : ''}`}>
+                    <li className={`font-semibold`}>
+                      <NavLink
+                        to='/ApprovingTask'
+                        className={`font-semibold`}
+                      >
+                        Task
+                      </NavLink>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
         )}
+
         {userRole === 'Admin' && (
 
           <NavLink to='/Divisi'>

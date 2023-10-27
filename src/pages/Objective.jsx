@@ -43,6 +43,11 @@ export const Objective = () => {
     const [dataObjectiveByID, setdataObjectiveByID] = useState({}); // Menambahkan state data
 
 
+    const [DataObjekSelesai, setDataObjekSelesai] = useState(null); // Menambahkan state data
+    const [DataKeyResult, setDataKeyResult] = useState(null); // Menambahkan state data
+    const [DataKeyResultSelesai, setDataKeyResultSelesai] = useState(null); // Menambahkan state data
+
+
 
     const [showEditDanApus, setshowEditDanApus] = useState({}); // Tambahkan state untuk popup pengeditan
 
@@ -50,6 +55,8 @@ export const Objective = () => {
     const [formData, setFormData] = useState({
         id_projek: `${id}`,
         nama: '',
+        start_date: '',
+        end_date: '',
     });
 
 
@@ -78,12 +85,46 @@ export const Objective = () => {
         const role = localStorage.getItem('role');
         setUserRole(role);
 
+        axios.get(`http://localhost:3050/objektif/count/projek/${id}/selesai`)
+            .then((response) => {
+                console.log('Total Yang sudah selesai', response.data.count);
+                const Dataselesai = response.data.count;
+                setDataObjekSelesai(Dataselesai)
+
+            })
+            .catch((error) => {
+                console.error('Terjadi kesalahan:', error);
+            });
+
+        axios.get(`http://localhost:3050/keyresult/count/projek/${id}/progres`)
+            .then((response) => {
+                console.log('Total KEY RESULT Yang masih progres', response.data.count);
+                const Dataselesai = response.data.count;
+                setDataKeyResult(Dataselesai)
+
+            })
+            .catch((error) => {
+                console.error('Terjadi kesalahan:', error);
+            });
+
+        axios.get(`http://localhost:3050/keyresult/count/projek/${id}/selesai`)
+            .then((response) => {
+                console.log('Total KEY RESULT Yang masih Selesai', response.data.count);
+                const Dataselesai = response.data.count;
+                setDataKeyResultSelesai(Dataselesai)
+
+            })
+            .catch((error) => {
+                console.error('Terjadi kesalahan:', error);
+            });
+
         axios.get(`http://localhost:3050/projek/${id}`)
             .then((response) => {
                 // todo console.log(response.data.projek);
                 const ObjectiveData = response.data.projek;
                 setdataProjek(ObjectiveData);
-                localStorage.setItem('Hal', `OKR / ${dataProjek.nama}`);
+
+                localStorage.setItem('Hal', `OKR / ${ObjectiveData.nama}`);
 
                 const teamIds = response.data.projek.team;
 
@@ -103,6 +144,8 @@ export const Objective = () => {
                     // console.log('data tim', teamData);
                     // Disimpan dalam state datatim (pastikan untuk melakukan validasi data)
                     setdatatim(teamData.filter((data) => data !== null));
+                    setFilteredTim(teamData.filter((data) => data !== null));
+
                 });
 
             })
@@ -471,6 +514,8 @@ export const Objective = () => {
 
     const [formDataEditObjek, setFormDataEditObjek] = useState({
         nama: '',
+        start_date: '',
+        end_date: '',
     });
 
     useEffect(() => {
@@ -481,6 +526,8 @@ export const Objective = () => {
 
                 setFormDataEditObjek({
                     nama: Data.nama,
+                    start_date: Data.start_date,
+                    end_date: Data.end_date,
                 });
 
 
@@ -573,14 +620,14 @@ export const Objective = () => {
             .then((response) => {
                 console.log('Data keyresult BY ID ', response.data.keyresult);
                 const Data = response.data.keyresult;
-                    setFormDataEditKeyResult({
-                        nama: Data.nama,
-                        assign_to: Data.assign_to,
-                        nama_profile: Data.nama_profile,
-                        link: Data.link,
-                        target_value: Data.target_value,
-                        days: Data.days,
-                    });
+                setFormDataEditKeyResult({
+                    nama: Data.nama,
+                    assign_to: Data.assign_to,
+                    nama_profile: Data.nama_profile,
+                    link: Data.link,
+                    target_value: Data.target_value,
+                    days: Data.days,
+                });
 
 
             })
@@ -763,6 +810,54 @@ export const Objective = () => {
             Swal.fire('Error', 'Terjadi kesalahan', 'error');
         }
     };
+    const [DAtatDivisi, setDAtatDivisi] = useState(null); // Menambahkan state data
+
+
+
+    useEffect(() => {
+        axios.get(`http://localhost:3050/divisi/`)
+            .then((response) => {
+                console.log('Data DIvisi ', response.data.divisiData);
+                setDAtatDivisi(response.data.divisiData)
+
+
+            })
+            .catch((error) => {
+                console.error('Terjadi kesalahan:', error);
+            });
+
+    }, [])
+
+
+
+    const [searchNama, setSearchNama] = useState('');
+    const [searchDivisi, setSearchDivisi] = useState('');
+    const [filteredTim, setFilteredTim] = useState([]);
+
+    const handleNamaChange = (event) => {
+        setSearchNama(event.target.value);
+        filterTimData(event.target.value, searchDivisi);
+    };
+
+    const handleDivisiChange = (event) => {
+        setSearchDivisi(event.target.value);
+        filterTimData(searchNama, event.target.value);
+    };
+
+
+
+    const filterTimData = (nama, divisi) => {
+        const filteredData = datatim.filter((tim) => {
+            if (divisi === '' || divisi === '') {
+                return tim.nama.toLowerCase().includes(nama.toLowerCase());
+            } else {
+                return tim.nama.toLowerCase().includes(nama.toLowerCase()) && tim.divisi.toLowerCase().includes(divisi.toLowerCase());
+            }
+        });
+
+        setFilteredTim(filteredData);
+    };
+
 
 
 
@@ -795,8 +890,8 @@ export const Objective = () => {
                                     <h1 className="font-normal text-sm">{dataProjek.deskripsi}</h1>
 
                                     <div className="flex mt-10">
-                                        <div className="w-[150px] h-[150px] bg-Merah-muda rounded-xl">
-                                            <div className="w-7 h-7 rounded-full bg-Merah ml-3 mt-3 flex">
+                                        <div className="w-[150px] h-[150px] bg-blue-50 rounded-xl">
+                                            <div className="w-7 h-7 rounded-full bg-blue-500 ml-3 mt-3 flex">
                                                 <div className="text-white m-auto w-fit h-fit"><HiMiniChartBarSquare size={'20px'} /></div>
                                             </div>
                                             <h1 className="text-2xl font-semibold ml-3 mt-5">{dataObjective.length}</h1>
@@ -807,7 +902,7 @@ export const Objective = () => {
                                             <div className="w-7 h-7 rounded-full bg-cream-Dark ml-3 mt-3 flex">
                                                 <div className="text-white m-auto w-fit h-fit"><HiDocumentText size={'20px'} /></div>
                                             </div>
-                                            <h1 className="text-2xl font-semibold ml-3 mt-5">{TotalKey}</h1>
+                                            <h1 className="text-2xl font-semibold ml-3 mt-5">{DataKeyResult}</h1>
                                             <h1 className="text-sm font-normal ml-3 mt-4">Key Result Aktif</h1>
                                         </div>
 
@@ -815,7 +910,7 @@ export const Objective = () => {
                                             <div className="w-7 h-7 rounded-full bg-Hijau-tua ml-3 mt-3 flex">
                                                 <div className="text-white m-auto w-fit h-fit"><BsCheckLg size={'20px'} /></div>
                                             </div>
-                                            <h1 className="text-2xl font-semibold ml-3 mt-5">{completedKeyResults}</h1>
+                                            <h1 className="text-2xl font-semibold ml-3 mt-5">{DataKeyResultSelesai}</h1>
                                             <h1 className="text-sm font-normal ml-3 mt-1">Key Result Completed</h1>
                                         </div>
 
@@ -823,7 +918,7 @@ export const Objective = () => {
                                             <div className="w-7 h-7 rounded-full bg-unggu-tua ml-3 mt-3 flex">
                                                 <div className="text-white m-auto w-fit h-fit"><BsFillPersonCheckFill size={'15px'} /></div>
                                             </div>
-                                            <h1 className="text-2xl font-semibold ml-3 mt-5">{completedObjek}</h1>
+                                            <h1 className="text-2xl font-semibold ml-3 mt-5">{DataObjekSelesai}</h1>
                                             <h1 className="text-sm font-normal ml-3 mt-1">Objective Completed</h1>
                                         </div>
                                     </div>
@@ -856,7 +951,7 @@ export const Objective = () => {
                         </div>
 
                         <div className="w-[470px] ml-auto mt-[30px]">
-                        <div className="bg-white flex h-[100px] rounded-lg p-3 w-full  mb-[30px]">
+                            <div className="bg-white flex h-[100px] rounded-lg p-3 w-full  mb-[30px]">
                                 <div className="w-full h-fit m-auto">
                                     <h1 className={`text-3xl ${Percentage() === '100' ? "text-Hijau-tua" : "text-Gold"}`}>{Percentage()}%</h1>
                                     <div className="w-[98%] mx-auto mt-2 h-3 bg-gray-100 rounded-xl">
@@ -913,7 +1008,20 @@ export const Objective = () => {
                                         <div className={`h-8 w-24 flex my-auto ml-auto rounded-xl ${objek.status == "Progress" ? "bg-Gold" : objek.status === "Selesai" ? "bg-Hijau-tua" : "bg-Gold"}`}>
                                             <p className='m-auto w-fit text-white font-semibold h-fit'>{objek.status}</p>
                                         </div>
-                                        <div className='relative w-fit h-fit flex mx-2 my-auto'>
+                                        {userRole === 'Admin' && (
+
+                                        <div className="flex w-fit cursor-pointer hover:bg-gray-100 rounded-lg ml-2" onClick={() => {
+                                            setshowTambahKey(true);
+                                            // setIDObjek(objek._id);
+                                        }}>
+                                            <span className=" my-auto">
+                                                <IoIosAddCircleOutline size={'20px'} />
+                                            </span>
+                                            <p className="ml-2 my-auto hidden hover:block">Key Result</p>
+
+                                        </div>
+                                        )}
+                                        <div className='relative w-fit h-fit flex mx-1 my-auto'>
                                             {userRole === 'Admin' && (
 
                                                 <div className="w-fit m-auto cursor-pointer" onClick={() => {
@@ -933,7 +1041,7 @@ export const Objective = () => {
                                                         </div>
                                                     </div>
 
-                                                    <div className="flex w-full mt-3 cursor-pointer hover:bg-gray-100 rounded-lg p-2" onClick={() => {
+                                                    {/* <div className="flex w-full mt-3 cursor-pointer hover:bg-gray-100 rounded-lg p-2" onClick={() => {
                                                         setshowTambahKey(true);
                                                         // setIDObjek(objek._id);
                                                     }}>
@@ -942,12 +1050,12 @@ export const Objective = () => {
                                                         </span>
 
                                                         <p className="ml-2 my-auto">Key Result</p>
-                                                    </div>
+                                                    </div> */}
 
-                                                    <hr className="my-3 w-[160px] -ml-2 " />
+                                                    {/* <hr className="my-3 w-[160px] -ml-2 " /> */}
 
 
-                                                    <div className="flex w-full cursor-pointer hover:bg-gray-100 rounded-lg p-2" onClick={() => setshowEdit(true)}>
+                                                    <div className="flex w-full cursor-pointer hover:bg-gray-100 rounded-lg p-2 mt-2" onClick={() => setshowEdit(true)}>
                                                         <span className=" my-auto">
                                                             <BiPencil size={'20px'} />
                                                         </span>
@@ -1110,6 +1218,18 @@ export const Objective = () => {
                                                         className="px-2 py-3 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1" />
                                                 </div>
 
+                                                <div className='mb-2'>
+                                                    <label htmlFor="" className='ml-2'>Start Date</label><br />
+                                                    <input type="date" name='start_date' placeholder='Start Date' onChange={handleInputChange}
+                                                        className="px-2 py-3 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1" />
+                                                </div>
+
+                                                <div className='mb-2'>
+                                                    <label htmlFor="" className='ml-2'>End Date</label><br />
+                                                    <input type="date" name='end_date' placeholder='Nama' onChange={handleInputChange}
+                                                        className="px-2 py-3 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1" />
+                                                </div>
+
                                                 <div className='w-full mx-auto mt-10'>
                                                     <input type="submit" value="Tambah Objektif"
                                                         className='w-full h-[35px] rounded-xl font-semibold text-xl text-white cursor-pointer bg-unggu' />
@@ -1152,6 +1272,16 @@ export const Objective = () => {
                                                 <div className='mb-2'>
                                                     <label htmlFor="" className='ml-2'>Nama</label><br />
                                                     <input type="text" name='nama' placeholder='Nama' value={formDataEditObjek.nama} onChange={handleInputChangeEdit}
+                                                        className="px-2 py-3 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1" />
+                                                </div>
+                                                <div className='mb-2'>
+                                                    <label htmlFor="" className='ml-2'>Start Date</label><br />
+                                                    <input type="date" name='start_date' placeholder='start date' value={formDataEditObjek.start_date} onChange={handleInputChangeEdit}
+                                                        className="px-2 py-3 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1" />
+                                                </div>
+                                                <div className='mb-2'>
+                                                    <label htmlFor="" className='ml-2'>End Date</label><br />
+                                                    <input type="date" name='end_date' placeholder='End Date' value={formDataEditObjek.end_date} onChange={handleInputChangeEdit}
                                                         className="px-2 py-3 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1" />
                                                 </div>
 
@@ -1333,13 +1463,30 @@ export const Objective = () => {
                                                 </div>
 
                                                 <div className='mb-2'>
+                                                    <div className="flex">
+                                                        <select name="DIvisi" onChange={handleDivisiChange} value={searchDivisi}
+                                                            className="px-2 py-2 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1">
+                                                            <option value="">Divisi</option>
+                                                            {DAtatDivisi.map((tim) => (
+                                                                <option key={tim._id} value={tim.nama}>
+                                                                    {tim.nama}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+
+                                                        <input type="text" name="nama" placeholder="Cari nama" value={searchNama} onChange={handleNamaChange}
+                                                            className="px-2 py-2 bg-gray-200 mt-1 h-[41px] ml-2 rounded-md font-mono text-black text-base mx-auto w-full mb-1"
+                                                        />
+
+                                                    </div>
+
                                                     <select name="assign_to" onChange={handleInputChangeKey}
-                                                        className="px-2 py-2 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1" >
+                                                        className="px-2 py-2 bg-gray-200 mt-1 h-[41px] rounded-md font-mono text-black text-base mx-auto w-full mb-1"
+                                                    >
                                                         <option value="">Pilih Assign to</option>
-                                                        {datatim.map((tim) => (
+                                                        {filteredTim.map((tim) => (
                                                             <option key={tim._id} value={tim._id}>
                                                                 {tim.nama} / {tim.divisi}
-
                                                             </option>
                                                         ))}
                                                     </select>

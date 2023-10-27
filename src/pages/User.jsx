@@ -107,7 +107,7 @@ export const User = () => {
             [name]: value,
         });
     };
-    
+
 
     const handleEditInputChange = (e) => {
         const { name, value } = e.target;

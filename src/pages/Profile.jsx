@@ -35,6 +35,7 @@ export const Profile = () => {
         gender: '',
         tanggal_lahir: '',
         bio: '',
+        quote: '',
         sosmed: [],
         foto: null,
     });
@@ -244,16 +245,16 @@ export const Profile = () => {
                     console.log('Respon dari server (berhasil):', responseData);
                     Swal.fire({
                         title: 'Sukses',
-                        text: 'Pendaftaran berhasil!',
+                        text: 'Berhasil Edit Profile!',
                         icon: 'success',
                         confirmButtonText: 'OKE',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // window.location.href = '/halamanBarang';
+                            window.location.href = '/Profile';
                         }
                     });
 
-                    setSuccessMessage('Pendaftaran berhasil!');
+                    setSuccessMessage('Berhasil Edit Profile!');
                 } catch (error) {
                     console.error('Gagal mengambil data JSON dari respons:', error);
                     Swal.fire('Error', 'Terjadi kesalahan dalam memproses respons', 'error');
@@ -275,9 +276,13 @@ export const Profile = () => {
             <div className="w-[1260px]">
                 <div className='h-[70px]'></div>
 
-                <div className="w-[1200px] mx-auto mt-5">
+                <div className="w-[1200px] mx-auto mt-[25px]">
+                    <div className="relative w-[1200px] h-[278px] -mb-[278px] -z-0 flex">
+                        <p className="w-fit h-fit max-w-[950px] mx-auto mt-14 text-4xl text-white/80 font-semibold">"{dataProfile.quote}"</p>
+                    </div>
+
                     <img src={Logo} className='' />
-                    <div className='flex relative p-4 rounded-xl -mt-14 bg-white/80 w-[95%] mx-auto'>
+                    <div className='flex relative -z-0 p-4 rounded-xl -mt-14 bg-white/80 w-[95%] mx-auto'>
                         <img src={`http://localhost:9000/okr.profile/${dataProfile.foto}`}
                             className='w-20 h-20 border-unggu/60 p-[5px] border-4 rounded-full my-auto' />
 
@@ -360,7 +365,7 @@ export const Profile = () => {
                                     <div className="flex">
                                         <div className="w-[470px]">
                                             <input type="text" name="nama" required
-                                                value={formData.nama || dataProfile.nama} onChange={handleInputChange}
+                                                value={formData.nama || dataProfile.nama || ""} onChange={handleInputChange}
                                                 className="px-2 mt-1 h-[41px] border-2 font-mono text-black text-base mx-auto w-full mb-1"
                                             />
                                             <br />
@@ -433,6 +438,9 @@ export const Profile = () => {
 
                                         <div className="w-[470px] ml-auto">
                                             <textarea name="bio" placeholder='Bio' value={formData.bio || dataProfile.bio} onChange={handleInputChange}
+                                                className='p-2 h-[41px] border text-base rounded-[5px] w-full mt-1 mb-1' />
+
+                                            <input name="quote" placeholder='Quote' value={formData.quote || dataProfile.quote} onChange={handleInputChange} maxLength={133} // Menambahkan properti maxLength
                                                 className='p-2 h-[41px] border text-base rounded-[5px] w-full mt-1 mb-1' />
 
                                             <input type="file" name="foto" id="file-input" onChange={handleInputChange}

@@ -13,6 +13,9 @@ import { BiSolidDashboard, BiTargetLock, BiSolidUserCircle } from "react-icons/b
 
 
 export const NavbarAT = () => {
+    const [Halaman, setHalaman] = useState(localStorage.getItem('Hal'));
+    const [userRole, setUserRole] = useState(localStorage.getItem('role'));
+
     const [dataProfile, setDataProfile] = useState(null); // Menambahkan state data
     const [IDProfile, setIDProfile] = useState(null); // Menambahkan state data
     const location = useLocation();
@@ -20,6 +23,7 @@ export const NavbarAT = () => {
     const [showProfile, setshowProfile] = useState(false); // Tambahkan state untuk popup pengeditan
     const [showNotif, setshowNotif] = useState(true); // Tambahkan state untuk popup pengeditan
     const [LastProgres, setLastProgres] = useState(null); // Menambahkan state data
+    const [DataPending, setDataPending] = useState(null); // Menambahkan state data
 
 
 
@@ -37,6 +41,9 @@ export const NavbarAT = () => {
 
     // Gunakan useEffect untuk mengambil data saat komponen pertama kali di-render
     useEffect(() => {
+        const role = localStorage.getItem('role');
+        setUserRole(role);
+
         // Cek apakah token tersimpan di Local Storage
         const token = localStorage.getItem('token');
         if (token) {
@@ -76,9 +83,22 @@ export const NavbarAT = () => {
                     console.error('Terjadi kesalahan:', error);
                 });
 
+            axios.get(`http://localhost:3050/progres/status/pending`)
+                .then((response) => {
+                    // Mengisi opsi kategori dengan data dari server
+                    console.log('DATA PENDING', response.data.pendingProgres);
+                    setDataPending(response.data.pendingProgres)
+
+                    // setAlldatatim(response.data.profileData);
+                })
+                .catch((error) => {
+                    console.error('Terjadi kesalahan:', error);
+                });
+
             const interval = setInterval(() => {
                 if (showNotifikasi) {
                     closeNotifikasi();
+                    // setshowNotifikasi(true);
                 }
             }, 500);
 
@@ -91,24 +111,12 @@ export const NavbarAT = () => {
         }
     }, [IDProfile]); // Parameter kedua [] memastikan bahwa useEffect hanya dijalankan sekali saat komponen pertama kali di-render
 
-    // Gunakan useEffect untuk mereset notifikasi setiap 5 detik
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         if (showNotifikasi) {
-    //             closeNotifikasi();
-    //         }
-    //     }, 5000);
-
-    //     // Membersihkan interval saat komponen tidak lagi digunakan
-    //     return () => {
-    //         clearInterval(interval);
-    //     };
-    // }, [showNotifikasi]);
 
     // Mengecek apakah dataProfile tidak null sebelum mencoba mengakses properti
     if (!dataProfile) {
         return <div>Loading...</div>;
     }
+
 
     // console.log('IDProfile', IDProfile);
     // useEffect(() => {
@@ -150,8 +158,8 @@ export const NavbarAT = () => {
             case '/User':
                 return 'User';
 
-            case '/Objective':
-                return 'Objective';
+            case '/ApprovingTask':
+                return 'ApprovingTask';
 
             case '/Task':
                 return 'Task';
@@ -160,9 +168,15 @@ export const NavbarAT = () => {
                 return 'Objective';
             // Tambahkan lebih banyak case sesuai dengan halaman Anda
             default:
-                return 'OKR';
+                return `${Halaman}`;
         }
     }
+
+    // Memperbarui label setiap 2 detik
+    setInterval(() => {
+        const HAL = localStorage.getItem('Hal');
+        setHalaman(HAL);
+    }, 2000);
 
     const handleClick = () => {
         setshowNotifikasi(true);
@@ -171,28 +185,30 @@ export const NavbarAT = () => {
 
     const handleLogout = () => {
         Swal.fire({
-          title: 'Are you sure?',
-          text: "Kamu yakin mau Logout",
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes!'
+            title: 'Are you sure?',
+            text: "Kamu yakin mau Logout",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!'
         }).then((result) => {
-          if (result.isConfirmed) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            window.location.href = '/';
-          }
+            if (result.isConfirmed) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                window.location.href = '/';
+            }
         });
-      };
+    };
+
+
 
 
 
 
 
     return (
-        <div className="flex w-[83%] right-0 fixed font-Poppins">
+        <div className="flex xl:w-[83%] w-full right-0 fixed z-10 font-Poppins">
             <div className='w-full bg-white font-Inter h-[70px] relative flex'>
                 <h1 className="text-2xl font-bold my-auto ml-5">  {getLocationLabel(location.pathname)}</h1>
 
@@ -213,9 +229,9 @@ export const NavbarAT = () => {
                         <div className={`w-1 h-1 absolute right-[2px] top-[2px] bg-red-500 rounded-full ${showNotif ? '' : 'hidden'}`}></div>
                     </div>
                     <div className="" onMouseEnter={() => setshowProfile(true)} onMouseLeave={() => setshowProfile(false)}>
-                            <div className="my-auto flex mr-5">
-                                <img src={`http://localhost:9000/okr.profile/${dataProfile.foto}`} className='w-12 h-12 my-auto mr-2 rounded-full p-1 border-unggu border' />
-                            </div>
+                        <div className="my-auto flex mr-5">
+                            <img src={`http://localhost:9000/okr.profile/${dataProfile.foto}`} className='w-12 h-12 my-auto mr-2 rounded-full p-1 border-unggu border' />
+                        </div>
 
                         {showProfile && (
                             <div className="absolute inset-0 items-center justify-center z-10 w-[300px] h-fit -left-[220px] top-[40px] ">
@@ -226,14 +242,14 @@ export const NavbarAT = () => {
                                     </div>
 
                                     <hr className="my-3" />
-                                    
+
                                     <NavLink to={'/Profile'}>
-                                    <div className="flex ml-2 p-1 hover:bg-unggu-muda rounded-md text-gray-400 cursor-pointer hover:text-black">
-                                        <BiSolidUserCircle className='w-8 h-8 my-auto mr-2 rounded-full' />
-                                        <p className="w-fit h-fit my-auto ml-2">Profile</p>
-                                    </div>
+                                        <div className="flex ml-2 p-1 hover:bg-unggu-muda rounded-md text-gray-400 cursor-pointer hover:text-black">
+                                            <BiSolidUserCircle className='w-8 h-8 my-auto mr-2 rounded-full' />
+                                            <p className="w-fit h-fit my-auto ml-2">Profile</p>
+                                        </div>
                                     </NavLink>
-                                    
+
                                     <div className="flex mt-4 ml-3 p-1 hover:bg-unggu-muda rounded-md text-gray-400 cursor-pointer hover:text-black" onClick={handleLogout}>
                                         <HiOutlineLogout className='w-7 h-7 my-auto mr-2 rounded-full' />
                                         <p className="w-fit h-fit my-auto ml-2">Logout</p>
@@ -245,29 +261,60 @@ export const NavbarAT = () => {
 
 
                     {showNotifikasi && (
-                        <div className="absolute inset-0 p-3 items-center justify-center z-10 w-[450px] h-fit shadow-lg cursor-pointer shadow-black/20 bg-white -left-56 rounded-xl top-[35px] border "
+                        <div className="absolute inset-0 p-3 items-center justify-center z-10 w-[400px] lg:w-[450px] h-fit shadow-lg cursor-pointer shadow-black/20 bg-white -left-72 lg:-left-[350px] rounded-xl top-[50px] border "
                             onClick={closeNotifikasi} >
                             <div className="flex">
                                 <div className="overflow-y-scroll overflow-hidden w-full h-[350px] mt-3">
                                     <div className="w-full h-fit">
-                                        {LastProgres ? (
-                                            LastProgres.map((Progres) => (
-                                                <div key={Progres._id} className="h-10 mb-5 flex">
-                                                    <div className="">
-                                                        <img src={`http://localhost:9000/okr.profile/${Progres.foto_profile}`} className='w-10 h-10 my-auto mr-2 rounded-full border' />
-                                                        {/* <BsFillBellFill size={'20px'} className='mb-2 text-unggu' /> */}
-                                                        {/* <div className="w-1 h-12 bg-gray-300 mx-auto rounded-xl"></div> */}
-                                                    </div>
-                                                    <div className="w-full h-fit my-auto ml-2">
-                                                        <h1 className="text-xs">Selamat <span className="font-semibold ">{Progres.nama_profile}</span> progress anda <span className="font-semibold ">{Progres.nama}</span> telah di approve oleh admin</h1>
-                                                        {/* <h1 className="font-semibold text-sm">{Progres.nama}</h1> */}
-                                                    </div>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div>Loading...</div>
-                                        )}
+                                        {userRole === 'Admin' ? (
+                                            <div className="">
+                                                {DataPending ? (
+                                                    DataPending.map((Progres) => (
+                                                        <div key={Progres._id} className="h-10 mb-5 flex">
+                                                            <div className="">
+                                                                <img src={`http://localhost:9000/okr.profile/${Progres.foto_profile}`} className='w-10 h-10 my-auto mr-2 rounded-full border' />
+                                                                {/* <BsFillBellFill size={'20px'} className='mb-2 text-unggu' /> */}
+                                                                {/* <div className="w-1 h-12 bg-gray-300 mx-auto rounded-xl"></div> */}
+                                                            </div>
+                                                            <div className="w-full h-fit my-auto ml-2">
+                                                                <h1 className="text-xs"> <span className="font-semibold ">{Progres.nama_profile}</span> mengumpulkan data progress <span className="font-semibold ">{Progres.nama}</span></h1>
+                                                                {/* <h1 className="font-semibold text-sm">{Progres.nama}</h1> */}
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <div>Loading...</div>
+                                                )}
+                                            </div>
 
+                                        ) : (
+                                            <div className="">
+                                                {LastProgres ? (
+                                                    LastProgres.map((Progres) => (
+                                                        <div key={Progres._id} className="h-10 mb-5 flex">
+                                                            <div className="">
+                                                                <img src={`http://localhost:9000/okr.profile/${Progres.foto_profile}`} className='w-10 h-10 my-auto mr-2 rounded-full border' />
+                                                                {/* <BsFillBellFill size={'20px'} className='mb-2 text-unggu' /> */}
+                                                                {/* <div className="w-1 h-12 bg-gray-300 mx-auto rounded-xl"></div> */}
+                                                            </div>
+                                                            <div className="w-full h-fit my-auto ml-2">
+                                                                <h1 className="text-xs">Selamat 
+                                                                <span className="font-semibold "> {Progres.nama_profile} </span>
+
+                                                                    progress anda 
+
+                                                                    <span className="font-semibold "> {Progres.nama} </span> 
+                                                                    
+                                                                    telah di approve oleh admin</h1>
+                                                                {/* <h1 className="font-semibold text-sm">{Progres.nama}</h1> */}
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <div>Loading...</div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

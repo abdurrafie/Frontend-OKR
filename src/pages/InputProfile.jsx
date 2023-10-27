@@ -25,6 +25,7 @@ export const InputProfile = () => {
         gender: '',
         tanggal_lahir: '',
         bio: '',
+        quote: '',
         sosmed: [],
         foto: null,
     });
@@ -41,25 +42,25 @@ export const InputProfile = () => {
             setTiktokLink(value);
         } else if (type === 'file') {
             const selectedFile = e.target.files[0]; // Mengambil file yang dipilih, hanya yang pertama
-      
+
             if (selectedFile) {
-              const objectUrl = URL.createObjectURL(selectedFile);
-      
-              setFormData({
-                ...formData,
-                foto: selectedFile,
-              });
-      
-              setImageFile(objectUrl); // Menampilkan pratinjau file yang dipilih
+                const objectUrl = URL.createObjectURL(selectedFile);
+
+                setFormData({
+                    ...formData,
+                    foto: selectedFile,
+                });
+
+                setImageFile(objectUrl); // Menampilkan pratinjau file yang dipilih
             } else {
-              setFormData({
-                ...formData,
-                foto: null, // Atur nilai null saat tidak ada file yang dipilih
-              });
-              setImageFile(null); // Menampilkan pratinjau file yang dipilih
-      
+                setFormData({
+                    ...formData,
+                    foto: null, // Atur nilai null saat tidak ada file yang dipilih
+                });
+                setImageFile(null); // Menampilkan pratinjau file yang dipilih
+
             }
-          } else {
+        } else {
             setFormData({
                 ...formData,
                 [name]: value,
@@ -155,7 +156,7 @@ export const InputProfile = () => {
 
 
 
-    
+
     return (
         <div className='flex w-full bg-gray-100/60 h-fit font-Poppins'>
             <div className="w-[375px]"></div>

@@ -20,6 +20,12 @@ export const Dashboard = () => {
   const [persentage, setPersentage] = useState(0);
   const [IDRofile, setIDRofile] = useState(0);
   const [userRole, setUserRole] = useState(localStorage.getItem('role'));
+  const [dataProjekNONDRAFT, setdataProjekNONDRAFT] = useState(null); // Menambahkan state data
+
+  const [JumlahProjek, setJumlahProjek] = useState(null); // Menambahkan state data
+  const [JumlahObjek, setJumlahObjek] = useState(null); // Menambahkan state data
+  const [JumlahObjekSelesai, setJumlahObjekSelesai] = useState(null); // Menambahkan state data
+  const [JumlahKeyResult, setJumlahKeyResult] = useState(null); // Menambahkan state data
 
   useEffect(() => {
     // Pastikan peran pengguna telah diambil dari local storage
@@ -58,6 +64,56 @@ export const Dashboard = () => {
           // Mengisi opsi kategori dengan data dari server
           // console.log(response.data.profileData);
           setAlldatatim(response.data.profileData);
+        })
+        .catch((error) => {
+          console.error('Terjadi kesalahan:', error);
+        });
+
+      //#FFF
+
+      axios.get('http://localhost:3050/projek/count/jumlah')
+        .then((response) => {
+          console.log('localhost:3050/projek/count/jumlah', response.data.count);
+          setJumlahProjek(response.data.count);
+        })
+        .catch((error) => {
+          console.error('Terjadi kesalahan:', error);
+        });
+
+      axios.get('http://localhost:3050/objektif/count/progres')
+        .then((response) => {
+          console.log('localhost:3050/objektif/count/progres', response.data.count);
+          setJumlahObjek(response.data.count);
+        })
+        .catch((error) => {
+          console.error('Terjadi kesalahan:', error);
+        });
+
+      axios.get('http://localhost:3050/objektif/count/selesai')
+        .then((response) => {
+          console.log('localhost:3050/objektif/count/selesai', response.data.count);
+          setJumlahObjekSelesai(response.data.count);
+        })
+        .catch((error) => {
+          console.error('Terjadi kesalahan:', error);
+        });
+
+      axios.get('http://localhost:3050/keyresult/count/jumlah')
+        .then((response) => {
+          console.log('localhost:3050/keyresult/count/jumlah', response.data.count);
+          setJumlahKeyResult(response.data.count);
+        })
+        .catch((error) => {
+          console.error('Terjadi kesalahan:', error);
+        });
+
+
+
+      axios.get('http://localhost:3050/projek/non/draft')
+        .then((response) => {
+          // Mengisi opsi kategori dengan data dari server
+          // console.log(response.data.profileData);
+          setdataProjekNONDRAFT(response.data.draftprojek);
         })
         .catch((error) => {
           console.error('Terjadi kesalahan:', error);
@@ -290,11 +346,11 @@ export const Dashboard = () => {
             beginAtZero: true,
           },
         },
-        
+
       },
     });
   }, []);
- 
+
 
 
 
@@ -314,11 +370,11 @@ export const Dashboard = () => {
               <h1 className="font-normal text-sm">Progress Summery</h1>
 
               <div className="flex mt-10">
-                <div className="w-[150px] h-[150px] bg-Merah-muda rounded-xl">
-                  <div className="w-7 h-7 rounded-full bg-Merah ml-3 mt-3 flex">
+                <div className="w-[150px] h-[150px] bg-blue-50 rounded-xl">
+                  <div className="w-7 h-7 rounded-full bg-blue-500 ml-3 mt-3 flex">
                     <div className="text-white m-auto w-fit h-fit"><HiMiniChartBarSquare size={'20px'} /></div>
                   </div>
-                  <h1 className="text-2xl font-semibold ml-3 mt-5">5</h1>
+                  <h1 className="text-2xl font-semibold ml-3 mt-5">{JumlahProjek}</h1>
                   <h1 className="text-sm font-normal ml-3 mt-4">Projek</h1>
                 </div>
 
@@ -326,23 +382,23 @@ export const Dashboard = () => {
                   <div className="w-7 h-7 rounded-full bg-cream-Dark ml-3 mt-3 flex">
                     <div className="text-white m-auto w-fit h-fit"><HiDocumentText size={'20px'} /></div>
                   </div>
-                  <h1 className="text-2xl font-semibold ml-3 mt-5">2</h1>
+                  <h1 className="text-2xl font-semibold ml-3 mt-5">{JumlahObjek}</h1>
                   <h1 className="text-sm font-normal ml-3 mt-4">Objective Active</h1>
-                </div>
-
-                <div className="w-[150px] h-[150px] bg-Hijau-muda rounded-xl ml-5">
-                  <div className="w-7 h-7 rounded-full bg-Hijau-tua ml-3 mt-3 flex">
-                    <div className="text-white m-auto w-fit h-fit"><BsCheckLg size={'20px'} /></div>
-                  </div>
-                  <h1 className="text-2xl font-semibold ml-3 mt-5">10</h1>
-                  <h1 className="text-sm font-normal ml-3 mt-4">Key Result</h1>
                 </div>
 
                 <div className="w-[150px] h-[150px] bg-unggu-muda rounded-xl ml-5">
                   <div className="w-7 h-7 rounded-full bg-unggu-tua ml-3 mt-3 flex">
+                    <div className="text-white m-auto w-fit h-fit"><BsCheckLg size={'20px'} /></div>
+                  </div>
+                  <h1 className="text-2xl font-semibold ml-3 mt-5">{JumlahKeyResult}</h1>
+                  <h1 className="text-sm font-normal ml-3 mt-4">Key Result</h1>
+                </div>
+
+                <div className="w-[150px] h-[150px] bg-Hijau-muda rounded-xl ml-5">
+                  <div className="w-7 h-7 rounded-full bg-Hijau-tua ml-3 mt-3 flex">
                     <div className="text-white m-auto w-fit h-fit"><BsFillPersonCheckFill size={'15px'} /></div>
                   </div>
-                  <h1 className="text-2xl font-semibold ml-3 mt-5">1</h1>
+                  <h1 className="text-2xl font-semibold ml-3 mt-5">{JumlahObjekSelesai}</h1>
                   <h1 className="text-sm font-normal ml-3 mt-4">Objective Done</h1>
                 </div>
               </div>
@@ -380,54 +436,109 @@ export const Dashboard = () => {
                 </div>
 
                 <div className="overflow-y-scroll w-full h-[280px]">
-                  <div className="w-full h-fit ">
-                    {dataProjek ? (
-                      dataProjek.map((Projek, index) => (
-                        <div key={Projek._id} className='flex w-full h-[70px] bg-white border-t rounded-lg'>
-                          <NavLink to={`/Objective/${Projek._id}`} className='flex w-full h-[70px] rounded-lg'>
-                            <div className="ml-5 my-auto min-w-[200px]">
-                              <p className=" font-semibold w-fit text-xs">{Projek.nama}</p>
-                            </div>
 
-                            <div className="ml-5 my-auto w-[170px]">
-                              <div className="text-gray-400 flex font-semibold">
-                                {Projek.team.slice(0, 4).map((tim, index) => (
-                                  <div className="flex -mr-5" key={tim}>
-                                    <img className='w-8 h-8 border-2 border-white rounded-[100%]' src={getTimName(tim)} alt="" />
-                                  </div>
-                                ))}
-                                {Projek.team.length > 4 && (
-                                  <div className="-ml-1 my-auto flex rounded-[100%] bg-unggu-tua text-white w-8 h-8 ">
-                                    <p className="w-fit h-fit m-auto ">
-                                      +{Projek.team.length - 4}
-                                    </p>
-                                  </div>
-                                )}
+                  {userRole === 'Admin' || userRole === 'Menejemen' ? (
+
+                    <div className="w-full h-fit">
+                      {dataProjek ? (
+                        dataProjek.map((Projek, index) => (
+                          <div key={Projek._id} className='flex w-full h-[70px] bg-white border-t rounded-lg'>
+                            <NavLink to={`/Objective/${Projek._id}`} className='flex w-full h-[70px] rounded-lg'>
+                              <div className="ml-5 my-auto min-w-[200px]">
+                                <p className=" font-semibold w-fit text-xs">{Projek.nama}</p>
                               </div>
-                            </div>
 
-                            <div className="ml-8 my-auto w-[135px]">
-                              <div className={`h-7 w-20 flex my-auto rounded-xl ${Projek.status == "Progress" ? "bg-Gold" : Projek.status === "Selesai" ? "bg-Hijau-tua" : "bg-Gold"}`}>
-                                <p className='m-auto w-fit text-white font-semibold h-fit text-xs'>{Projek.status}</p>
-                              </div>
-                            </div>
-
-                            <div className="ml-5 my-auto w-[280px]">
-                              <div className="text-gray-400 font-semibold text-xs">
-                                <h1 className={`${percentages[index] === '100' ? "text-Hijau-tua " : "text-Gold"}`}>{percentages[index] || 0}%</h1>
-                                <div className='w-[200px] h-2 bg-gray-300 rounded-2xl'>
-                                  <div className={`h-2 rounded-2xl  ${percentages[index] === '100' ? "bg-Hijau-tua" : "bg-Gold"}`} style={{ width: `${percentages[index] || 0}%` }}></div>
+                              <div className="ml-5 my-auto w-[170px]">
+                                <div className="text-gray-400 flex font-semibold">
+                                  {Projek.team.slice(0, 4).map((tim, index) => (
+                                    <div className="flex -mr-5" key={tim}>
+                                      <img className='w-8 h-8 border-2 border-white rounded-[100%]' src={getTimName(tim)} alt="" />
+                                    </div>
+                                  ))}
+                                  {Projek.team.length > 4 && (
+                                    <div className="-ml-1 my-auto flex rounded-[100%] bg-unggu-tua text-white w-8 h-8 ">
+                                      <p className="w-fit h-fit m-auto ">
+                                        +{Projek.team.length - 4}
+                                      </p>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
-                            </div>
 
-                          </NavLink>
-                        </div>
-                      ))
-                    ) : (
-                      <div>Loading...</div>
-                    )}
-                  </div>
+                              <div className="ml-8 my-auto w-[135px]">
+                                <div className={`h-7 w-20 flex my-auto rounded-xl ${Projek.status == "Progress" ? "bg-Gold" : Projek.status === "Selesai" ? "bg-Hijau-tua" : "bg-Gold"}`}>
+                                  <p className='m-auto w-fit text-white font-semibold h-fit text-xs'>{Projek.status}</p>
+                                </div>
+                              </div>
+
+                              <div className="ml-5 my-auto w-[280px]">
+                                <div className="text-gray-400 font-semibold text-xs">
+                                  <h1 className={`${percentages[index] === '100' ? "text-Hijau-tua " : "text-Gold"}`}>{percentages[index] || 0}%</h1>
+                                  <div className='w-[200px] h-2 bg-gray-300 rounded-2xl'>
+                                    <div className={`h-2 rounded-2xl  ${percentages[index] === '100' ? "bg-Hijau-tua" : "bg-Gold"}`} style={{ width: `${percentages[index] || 0}%` }}></div>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </NavLink>
+                          </div>
+                        ))
+                      ) : (
+                        <div>Loading...</div>
+                      )}
+                    </div>
+
+                  ) : (
+
+                    <div className="w-full h-fit ">
+                      {dataProjekNONDRAFT ? (
+                        dataProjekNONDRAFT.map((Projek, index) => (
+                          <div key={Projek._id} className='flex w-full h-[70px] bg-white border-t rounded-lg'>
+                            <NavLink to={`/Objective/${Projek._id}`} className='flex w-full h-[70px] rounded-lg'>
+                              <div className="ml-5 my-auto min-w-[200px]">
+                                <p className=" font-semibold w-fit text-xs">{Projek.nama}</p>
+                              </div>
+
+                              <div className="ml-5 my-auto w-[170px]">
+                                <div className="text-gray-400 flex font-semibold">
+                                  {Projek.team.slice(0, 4).map((tim, index) => (
+                                    <div className="flex -mr-5" key={tim}>
+                                      <img className='w-8 h-8 border-2 border-white rounded-[100%]' src={getTimName(tim)} alt="" />
+                                    </div>
+                                  ))}
+                                  {Projek.team.length > 4 && (
+                                    <div className="-ml-1 my-auto flex rounded-[100%] bg-unggu-tua text-white w-8 h-8 ">
+                                      <p className="w-fit h-fit m-auto ">
+                                        +{Projek.team.length - 4}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="ml-8 my-auto w-[135px]">
+                                <div className={`h-7 w-20 flex my-auto rounded-xl ${Projek.status == "Progress" ? "bg-Gold" : Projek.status === "Selesai" ? "bg-Hijau-tua" : "bg-Gold"}`}>
+                                  <p className='m-auto w-fit text-white font-semibold h-fit text-xs'>{Projek.status}</p>
+                                </div>
+                              </div>
+
+                              <div className="ml-5 my-auto w-[280px]">
+                                <div className="text-gray-400 font-semibold text-xs">
+                                  <h1 className={`${percentages[index] === '100' ? "text-Hijau-tua " : "text-Gold"}`}>{percentages[index] || 0}%</h1>
+                                  <div className='w-[200px] h-2 bg-gray-300 rounded-2xl'>
+                                    <div className={`h-2 rounded-2xl  ${percentages[index] === '100' ? "bg-Hijau-tua" : "bg-Gold"}`} style={{ width: `${percentages[index] || 0}%` }}></div>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </NavLink>
+                          </div>
+                        ))
+                      ) : (
+                        <div>Loading...</div>
+                      )}
+                    </div>
+                  )}
 
                 </div>
 

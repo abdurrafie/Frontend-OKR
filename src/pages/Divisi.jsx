@@ -13,6 +13,7 @@ export const Divisi = () => {
     const [userRole, setUserRole] = useState(localStorage.getItem('role'));
     const [dataDivisi, setdataDivisi] = useState(null); // Menambahkan state data
     const [datatim, setdatatim] = useState(null); // Menambahkan state data
+    const [TotalAnggota, setTotalAnggota] = useState(null); // Menambahkan state data
     const [showTambahDivisi, setShowTambahDivisi] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
     const [formData, setFormData] = useState({
@@ -32,43 +33,78 @@ export const Divisi = () => {
 
             axios.get('http://localhost:3050/divisi').then((response) => {
                 //  Mengisi opsi kategori dengan data dari server
+                const test = response.data.divisiData
+                // console.log(response.data.divisiData);
 
-                // todo console.log(response.data.divisiData);
-                setdataDivisi(response.data.divisiData)
-                const teamIds = response.data.divisiData
-                    .map((Projek) => Projek._id); // Memastikan ID unik
+                const teamIds = response.data.divisiData.map((Projek) => Projek._id); // Memastikan ID unik
 
-                // todo console.log(teamIds);
+                // console.log(teamIds);
                 const promises = teamIds.map(async (teamId) => {
                     return axios.get(`http://localhost:3050/profile/profile/divisi/${teamId}`)
                         .then((teamResponse) => teamResponse.data.profiles)
                         .catch((teamError) => {
-                            console.error('Terjadi kesalahan saat mengambil data tim:', teamError);
+                            // console.error('Terjadi kesalahan saat mengambil data tim:', teamError);
                             return null; // Mengembalikan null jika ada kesalahan
                         });
                 });
 
+                const TOtalAnggota = teamIds.map(async (teamId) => {
+                    return axios.get(`http://localhost:3050/profile/profile/divisi/${teamId}/count`)
+                        .then((teamResponse) => teamResponse.data.count)
+                        .catch((teamError) => {
+                            // console.error('Terjadi kesalahan saat mengambil data tim:', teamError);
+                            return null; // Mengembalikan null jika ada kesalahan
+                        });
+                });
+
+                // console.log('TOtalAnggota', TOtalAnggota);
+
+                Promise.all(TOtalAnggota).then((teamData) => {
+                    // teamData berisi data tim untuk setiap ID tim, termasuk null untuk kesalahan
+                    // console.log(teamData);
+
+                    console.log('all2 ', test);
+                    console.log('td ', teamData);
+
+                    const result = test.map((obj, index) => ({
+                        ...obj,
+                        total: teamData[index]
+                    }));
+
+                    console.log(result);
+
+                    setdataDivisi(result)
+
+
+                    // Disimpan dalam state datatim (pastikan untuk melakukan validasi data)
+                    setTotalAnggota(teamData.filter((data) => data !== null));
+
+                    // Contoh menggunakan map untuk mengakses setiap data dalam array
+                    teamData.map((data, index) => {
+                        // console.log(`Data TatalAnggota ke-${index}:`, data);
+                        // Lakukan operasi lain pada data di sini
+                    });
+                });
+
                 Promise.all(promises).then((teamData) => {
                     // teamData berisi data tim untuk setiap ID tim, termasuk null untuk kesalahan
-                    console.log(teamData);
+                    // console.log(teamData);
                     // Disimpan dalam state datatim (pastikan untuk melakukan validasi data)
                     setdatatim(teamData.filter((data) => data !== null));
 
                     // Contoh menggunakan map untuk mengakses setiap data dalam array
                     teamData.map((data, index) => {
-                        console.log(`Data ke-${index}:`, data);
+                        // console.log(`Data ke-${index}:`, data);
                         // Lakukan operasi lain pada data di sini
                     });
                 });
             });
 
         } else {
-            console.log('Token tidak ditemukan');
+            // console.log('Token tidak ditemukan');
         }
 
     }, []);
-
-
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -83,7 +119,7 @@ export const Divisi = () => {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
-                console.error('Token tidak ditemukan');
+                // console.error('Token tidak ditemukan');
                 return;
             }
 
@@ -98,14 +134,14 @@ export const Divisi = () => {
 
             if (response.ok) {
                 const responseData = await response.json();
-                console.log('Respon dari server (berhasil):', responseData);
+                // console.log('Respon dari server (berhasil):', responseData);
 
                 // Pastikan bahwa responseData memiliki properti 'token'
                 if (responseData.token) {
-                    console.log('Token:', responseData.token);
+                    // console.log('Token:', responseData.token);
 
                 } else {
-                    console.error('Token tidak ditemukan dalam respons');
+                    // console.error('Token tidak ditemukan dalam respons');
                 }
 
                 Swal.fire({
@@ -121,10 +157,10 @@ export const Divisi = () => {
                 });
 
             } else {
-                console.error('Pendaftaran gagal');
+                // console.error('Pendaftaran gagal');
             }
         } catch (error) {
-            console.error('Terjadi kesalahan:', error);
+            // console.error('Terjadi kesalahan:', error);
         }
     };
 
@@ -206,10 +242,10 @@ export const Divisi = () => {
                                         )}
                                     </div>
 
-                                    <p className="">{jumlahAnggotaDivisi} anggota</p>
-
-                                    {jumlahAnggotaDivisi === 0 && (
-                                        <p>Belum ada anggota</p>
+                                    {divisi.total > 0 ? (
+                                        <p className="w-fit h-fit my-auto mr-5">{divisi.total} anggota</p>
+                                    ) : (
+                                        <p className="w-fit h-fit my-auto mr-5">Belum ada anggota</p>
                                     )}
                                 </div>
                             );

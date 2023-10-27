@@ -28,6 +28,7 @@ export const KeyResult = () => {
     const [projekPending, setprojekPending] = useState(0); // Menambahkan state data
     const [assign_to, setassign_to] = useState(0); // Menambahkan state data
     const [UserID, setUserID] = useState(0); // Menambahkan state data
+    const [NamaObjek, setNamaObjek] = useState(''); // Menambahkan state data
     const [showTambah, setshowTambah] = useState(false); // Tambahkan state untuk popup pengeditan
     const [showEdit, setshowEdit] = useState(); // Tambahkan state untuk popup pengeditan
     const [image, setImage] = useState(null);
@@ -77,6 +78,8 @@ export const KeyResult = () => {
                 console.error('Terjadi kesalahan:', error);
             });
 
+
+
         const role = localStorage.getItem('role');
         setUserRole(role);
 
@@ -84,16 +87,35 @@ export const KeyResult = () => {
             .then((response) => {
                 console.log(response.data.keyresult);
                 const Data = response.data.keyresult;
-                const statuspro = response.data.keyresult
-                // .map((objektif) => objektif.assign_to).flat().filter((id, index, self) => self.indexOf(id) === index); // Memastikan ID unik
+                const IDOBJEK = Data.id_objek;
+                const NamaKEY = Data.nama;
+                // const statuspro = response.data.keyresult.map((objektif) => objektif.assign_to).flat().filter((id, index, self) => self.indexOf(id) === index); // Memastikan ID unik
 
                 console.log('ass', Data.assign_to);
+                console.log('ID OBJEK', NamaKEY);
 
                 setassign_to(Data.assign_to);
 
                 setdataKeyResult(Data);
 
+                axios.get(`http://localhost:3050/objektif/${IDOBJEK}`)
+                    .then((response) => {
+                        console.log('data OBJEK', response.data.objek);
+                        const Data = response.data.objek.nama;
+                        console.log("Data Data Data Data", Data);
 
+                        setNamaObjek(Data);
+
+
+                        // setUserID(Data)
+                        localStorage.setItem('Hal', `OKR / ${Data} / ${NamaKEY}`);
+
+                    })
+                    .catch((error) => {
+                        console.error('Terjadi kesalahan:', error);
+                    });
+
+                console.log('NamaObjek', NamaObjek);
             })
             .catch((error) => {
                 console.error('Terjadi kesalahan:', error);
@@ -201,14 +223,14 @@ export const KeyResult = () => {
             const selectedFileEdit = e.target.files[0]; // Mengambil file yang dipilih, hanya yang pertama
 
             if (selectedFileEdit) {
-                const objectUrl = URL.createObjectURL(selectedFileEdit);
+                console.log('objectUrl', selectedFileEdit.name);
 
                 setFormData({
                     ...formData,
                     file: selectedFileEdit,
                 });
 
-                setImage(objectUrl); // Menampilkan pratinjau file yang dipilih
+                setImage(selectedFileEdit.name); // Menampilkan pratinjau file yang dipilih
             } else {
                 setFormData({
                     ...formData,
@@ -311,11 +333,11 @@ export const KeyResult = () => {
             .then((response) => {
                 console.log('Data BY ID', response.data.progres);
                 const Data = response.data.progres;
-                    setFormDataEdit({
-                        nama: Data.nama,
-                        deskripsi: Data.deskripsi,
-                        link: Data.link,
-                    });
+                setFormDataEdit({
+                    nama: Data.nama,
+                    deskripsi: Data.deskripsi,
+                    link: Data.link,
+                });
 
 
             })
@@ -412,14 +434,14 @@ export const KeyResult = () => {
 
 
     return (
-        <div className='flex w-full bg-gray-100/60 h-fit font-Poppins'>
+        <div className='flex xl:w-full bg-gray-100/60 h-fit font-Poppins '>
 
-            <div className="w-[260px]"></div>
+            <div className="xl:w-[260px]"></div>
 
-            <div className="w-[1260px]">
-                <div className='h-[70px]'></div>
+            <div className="xl:w-[1260px]">
+                <div className='xl:h-[70px] '></div>
 
-                <div className="w-[1200px] mx-auto mt-5">
+                <div className="xl:w-[1200px] mx-auto mt-5">
                     <NavLink to={`/Objective/${dataKeyResult.id_projek}`} className={'font-semibold text-gray-600 flex mt-[30px]'}>
                         <span className="w-fit h-fit my-auto mr-5">
                             <BiArrowBack size={'20px'} />
@@ -446,7 +468,7 @@ export const KeyResult = () => {
                                                 <div className={`${getBarColorBG(calculatePercentage())} h-2 rounded-xl`} style={{ width: `${calculatePercentage()}%` }}></div>
                                             </div>
                                         </div>
-                                        
+
 
                                         <div className="w-[570px] flex h-fit ml-auto my-auto">
                                             <div className="w-[176px] h-[176px] bg-Merah-muda rounded-xl">
@@ -731,7 +753,7 @@ export const KeyResult = () => {
 
                                                     <div className="flex">
                                                         <div className="px-2 py-2 flex bg-gray-200 mt-1 w-[50px] h-[41px] rounded-md font-mono text-black text-base mx-auto mb-1">
-                                                            <div className="w-fit h-fit m-auto">
+                                                            <div className="w-fit h-fit m-auto" onClick={() => document.getElementById('file-input').click()}>
                                                                 <AiFillFolderAdd size={'20px'} />
                                                             </div>
                                                         </div>
@@ -742,11 +764,6 @@ export const KeyResult = () => {
                                                                     {image}
                                                                 </div>
                                                             )}
-
-                                                            <div className="ml-auto my-auto mr-2 cursor-pointer"
-                                                                onClick={() => document.getElementById('file-input').click()}>
-                                                                <IoIosAddCircleOutline size={'20px'} />
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

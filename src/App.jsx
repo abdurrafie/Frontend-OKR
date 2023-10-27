@@ -13,28 +13,30 @@ import { User } from './pages/User';
 import { Approving } from './pages/Approving';
 import { KeyResult } from './pages/KeyResult';
 import { Task } from './pages/Task';
+import { ApprovingTask } from './pages/ApprovingTask';
 
 
 function App() {
 
   return (
     <>
-    <Navbar/>
-    <NavbarAT/>
+      <Navbar />
+      <NavbarAT />
       <Routes>
-        <Route path='/' Component={Login}/>
-        <Route path='/OKR' Component={OKR}/>
-        <Route path='/Divisi' Component={Divisi}/>
-        <Route path='/Approving' Component={Approving}/>
-        <Route path='/User' Component={User}/>
-        <Route path='/Dashboard' Component={Dashboard}/>
-        <Route path='/Profile' Component={Profile}/>
-        <Route path='/InputProfile' Component={InputProfile}/>
-        <Route path='/Register' Component={Register}/>
-        <Route path='/Task' Component={Task}/>
+        <Route path='/' Component={Login} />
+        <Route path='/OKR' Component={OKR} />
+        <Route path='/Divisi' Component={Divisi} />
+        <Route path='/Approving' Component={Approving} />
+        <Route path='/ApprovingTask' Component={ApprovingTask} />
+        <Route path='/User' Component={User} />
+        <Route path='/Dashboard' Component={Dashboard} />
+        <Route path='/Profile' Component={Profile} />
+        <Route path='/InputProfile' Component={InputProfile} />
+        <Route path='/Register' Component={Register} />
+        <Route path='/Task' Component={Task} />
 
-        <Route path="/Objective/:id" element={<Objective/>} />
-        <Route path="/KeyResult/:id" element={<KeyResult/>} />
+        <Route path="/Objective/:id" element={<Objective />} />
+        <Route path="/KeyResult/:id" element={<KeyResult />} />
 
 
       </Routes>
